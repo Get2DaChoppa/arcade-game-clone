@@ -1,9 +1,43 @@
+"use strict";
+let allEnemies = [],
+    blue,
+    orange,
+    green,
+    allGems =[
+            blue = {
+                sprite : 'images/gem-blue.png',
+                points : 20
+            },
+            orange = {
+                sprite : 'images/gem-orange.png',
+                points : 30
+            },
+            green = {
+                sprite : 'images/gem-green.png',
+                points : 40
+            }
+        ],
+    player ,
+    enemy ,
+    gem ,
+    round ,
+    lives ,
+    seconds ,
+    points ,
+    difficulty;
+
+// Creates a superclass tha contains the parameters
+// that game entities have in similar
+let GameEntities = function(x,y){
+    this.x = x;
+    this.y = y;
+}
+
 // Enemies our player must avoid
 let Enemy = function(x,y,speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.x = x;
-    this.y = y;
+    GameEntities.call(this,x,y);
     this.speed = speed;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -23,7 +57,7 @@ Enemy.prototype = {
             this.x = getRandomInt(-101,-250);
             this.speed = (getRandomInt(difficulty*20,(difficulty+3)*20)+50);
         }
-        this.checkCollision(this);
+        this.checkCollision();
     },
 
     // Draws the enemy on the screen, required method for game
@@ -50,8 +84,7 @@ Enemy.prototype = {
 
 // Player class constructor function
 let Player = function(x,y) {
-    this.x = x;
-    this.y = y;
+    GameEntities.call(this,x,y);
     this.sprite = 'images/char-boy.png';
 };
 
@@ -90,25 +123,24 @@ Player.prototype = {
         }
     },
     // Checks for collision between player and gem
-    checkCollision : function(player){
-        if (player.y + 131 >= gem.y + 90 &&
-            player.x + 25 <= gem.x + 88 &&
-            player.y + 73 <= gem.y + 135 &&
-            player.x + 76 >= gem.x + 11) {
+    checkCollision : function(){
+        if (this.y + 131 >= gem.y + 90 &&
+            this.x + 25 <= gem.x + 88 &&
+            this.y + 73 <= gem.y + 135 &&
+            this.x + 76 >= gem.x + 11) {
             gem = new Gem(getRandomInt(0,4)*101,getRandomInt(1,5)*83-18,getRandomInt(0,3));
-            player.addPoints(gem.points);
+            this.addPoints(gem.points);
         }
     },
     // Calls the actions needed to check in every player move
     update : function() {
-        player.checkCollision(this);
+        this.checkCollision();
     }
 };
 
 // Gem class constructor function
 let Gem = function(x,y,color) {
-    this.x = x;
-    this.y = y;
+    GameEntities.call(this,x,y);
     this.sprite = allGems[color].sprite;
     this.points = allGems[color].points;
 };
@@ -121,30 +153,9 @@ Gem.prototype = {
 };
 
 // initializes all variables and objects needed to start the game
+
 let gameStart = function() {
-    allGems =[
-        blue = {
-            sprite : 'images/gem-blue.png',
-            points : 20
-        },
-        orange = {
-            sprite : 'images/gem-orange.png',
-            points : 30
-        },
-        green = {
-            sprite : 'images/gem-green.png',
-            points : 40
-        }
-    ],
-    round = 0,
-    allEnemies = [],
-    lives = 3,
-    seconds = 30,
-    points = 0,
-    difficulty = 1,
-    gem = new Gem(getRandomInt(0,4)*101,getRandomInt(1,5)*83-18,getRandomInt(0,3));
-    player = new Player(202,404);
-    player.addPoints(0);
+    gameInit();
     livesUpdate(lives);
     roundUpdate();
     for (var i = 0; i < 3; i++) {
@@ -152,12 +163,24 @@ let gameStart = function() {
     };
 }
 
+let gameInit = function() {
+    round = 0;
+    lives = 3;
+    seconds = 30;
+    points = 0;
+    difficulty = 1;
+    allEnemies = [];
+    gem = new Gem(getRandomInt(0,4)*101,getRandomInt(1,5)*83-18,getRandomInt(0,3));
+    player = new Player(202,404);
+    player.addPoints(0);
+}
+
 gameStart();
 
 // Place all enemy objects in an array called allEnemies
 function enemiesInit(i) {
     setTimeout(function() {
-        let enemy = new Enemy(getRandomInt(-100,-300), (i+1)*83 -18, getRandomInt(difficulty*20,(difficulty+3)*20)+50);
+        enemy = new Enemy(getRandomInt(-100,-300), (i+1)*83 -18, getRandomInt(difficulty*20,(difficulty+3)*20)+50);
         allEnemies.push(enemy);
     }, 600);
 }
