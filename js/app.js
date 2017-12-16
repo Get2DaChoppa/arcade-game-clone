@@ -1,4 +1,3 @@
-
 // Enemies our player must avoid
 let Enemy = function(x,y,speed) {
     // Variables applied to each of our instances go here,
@@ -33,11 +32,11 @@ Enemy.prototype = {
     },
 
     // checks for collision between enemy and player
-    checkCollision : function(enemy){
-        if (player.y + 131 >= enemy.y + 90 &&
-            player.x + 25 <= enemy.x + 88 &&
-            player.y + 73 <= enemy.y + 135 &&
-            player.x + 76 >= enemy.x + 11) {
+    checkCollision : function(){
+        if (player.y + 131 >= this.y + 90 &&
+            player.x + 25 <= this.x + 88 &&
+            player.y + 73 <= this.y + 135 &&
+            player.x + 76 >= this.x + 11) {
             player.x = 202;
             player.y = 404;
             lives = lives - 1;
@@ -61,10 +60,6 @@ Player.prototype = {
     init : function() {
         this.x = 202 ;
         this.y = 404 ;
-    },
-    // Calls the actions needed to check in every player move
-    update : function() {
-        this.checkCollision(this);
     },
     // Draws the player on the screen, required method for game
     render : function() {
@@ -94,7 +89,6 @@ Player.prototype = {
             seconds = 30;
         }
     },
-
     // Checks for collision between player and gem
     checkCollision : function(player){
         if (player.y + 131 >= gem.y + 90 &&
@@ -102,8 +96,12 @@ Player.prototype = {
             player.y + 73 <= gem.y + 135 &&
             player.x + 76 >= gem.x + 11) {
             gem = new Gem(getRandomInt(0,4)*101,getRandomInt(1,5)*83-18,getRandomInt(0,3));
-            this.addPoints(gem.points);
+            player.addPoints(gem.points);
         }
+    },
+    // Calls the actions needed to check in every player move
+    update : function() {
+        player.checkCollision(this);
     }
 };
 
@@ -123,7 +121,7 @@ Gem.prototype = {
 };
 
 // initializes all variables and objects needed to start the game
-function gameStart() {
+let gameStart = function() {
     allGems =[
         blue = {
             sprite : 'images/gem-blue.png',

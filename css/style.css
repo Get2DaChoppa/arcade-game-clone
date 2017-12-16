@@ -32,7 +32,7 @@ body {
     line-height: 50px;
 }
 
-#dashboard {
+.dashboard {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -63,7 +63,7 @@ label {
     color:red;
 }
 
-.overlay{
+.overlay {
     font-size: 1.5em;
     position: absolute;
     background-color:  white;
@@ -96,7 +96,7 @@ label {
             transform: translate(0px,0px);
 }
 
-.modal{
+.modal {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
